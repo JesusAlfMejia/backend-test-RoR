@@ -2,8 +2,10 @@ require 'rails_helper'
 
 RSpec.describe "Brands Endpoints", type: :request do
   describe "GET /brands" do
-    let!(:brand1) { FactoryBot.create(:brand, name: "Acura", average_price: 700000) }
-    let!(:brand2) { FactoryBot.create(:brand, name: "Audi", average_price: 800000) }
+    before do
+      FactoryBot.create(:brand, name: "Acura", average_price: 700000)
+      FactoryBot.create(:brand, name: "Audi", average_price: 800000)
+    end
 
     it "returns all brands, each with an average price" do
       get "/brands"
@@ -12,7 +14,7 @@ RSpec.describe "Brands Endpoints", type: :request do
       json_response = JSON.parse(response.body)
       expect(json_response.size).to eq(2)
       expect(json_response[0]["name"]).to eq("Acura")
-      expect(json_response[1]["average_price"].to_d).to eq(800000.0)
+      expect(json_response[1]["average_price"]).to eq(800000)
     end
   end
 
