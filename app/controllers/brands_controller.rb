@@ -2,7 +2,8 @@ class BrandsController < ApplicationController
   # GET /brands
   # Return all brands
   def index
-    render json: Brand.all
+    brands = Brand.all
+    render json: BrandsRepresenter.new(brands).as_json
   end
 
   # GET /brands/:id/models
