@@ -22,11 +22,11 @@ RSpec.describe "Brands Endpoints", type: :request do
     let!(:brand) { FactoryBot.create(:brand, name: "Acura") }
 
     before do
-      FactoryBot.create(:model, name: "ILX", average_price: 303176, brand: brand)
-      FactoryBot.create(:model, name: "MDX", average_price: 448193, brand: brand)
-      FactoryBot.create(:model, name: "NSX", average_price: 3818225, brand: brand)
-      FactoryBot.create(:model, name: "RDX", average_price: 395753, brand: brand)
       FactoryBot.create(:model, name: "RL", average_price: 239050, brand: brand)
+      FactoryBot.create(:model, name: "MDX", average_price: 448193, brand: brand)
+      FactoryBot.create(:model, name: "RDX", average_price: 395753, brand: brand)
+      FactoryBot.create(:model, name: "ILX", average_price: 303176, brand: brand)
+      FactoryBot.create(:model, name: "NSX", average_price: 3818225, brand: brand)
     end
 
     it "returns 5 Acura models" do
@@ -35,7 +35,7 @@ RSpec.describe "Brands Endpoints", type: :request do
       expect(response).to have_http_status(:success)
       json_response = JSON.parse(response.body)
       expect(json_response.size).to eq(5)
-      expect(json_response[1]["name"]).to eq("MDX")
+      expect(json_response[0]["name"]).to eq("ILX")
       expect(json_response[2]["average_price"]).to eq(3818225)
       end
   end
