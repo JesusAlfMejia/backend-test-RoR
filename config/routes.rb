@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :brands, only: [ :index, :show ] do
+  resources :brands, only: [ :index, :show, :create ] do
     get "models", on: :member
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

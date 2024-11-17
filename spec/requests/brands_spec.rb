@@ -39,4 +39,27 @@ RSpec.describe "Brands Endpoints", type: :request do
       expect(json_response[2]["average_price"]).to eq(3818225)
       end
   end
+
+  describe "POST /brands" do
+    it "creates a new brand" do
+      expect {
+        post "/brands", params: { brand: { name: "Toyota" } }
+      }.to change { Brand.count }.from(0).to(1)
+
+      expect(response).to have_http_status(:created)
+      json_response = JSON.parse(response.body)
+      expect(json_response["message"]).to eq("Brand created successfully")
+    end
+
+    it "returns an error if the brand already exists" do
+      FactoryBot.create(:brand, name: "Toyota")
+      expect {
+        post "/brands", params: { brand: { name: "Toyota" } }
+      }.not_to change { Brand.count }
+
+      expect(response).to have_http_status(:conflict)
+      json_response = JSON.parse(response.body)
+      expect(json_response["error"]).to include("Name has already been taken")
+    end
+  end
 end
