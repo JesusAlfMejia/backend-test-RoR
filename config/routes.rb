@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   resources :brands, only: [ :index, :show, :create ] do
-    get "models", on: :member
+    member do
+      get "models", to: "models_get"
+      post "models", to: "models_post"
+    end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

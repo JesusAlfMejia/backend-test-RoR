@@ -6,18 +6,6 @@ class BrandsController < ApplicationController
     render json: BrandsRepresenter.new(brands).as_json
   end
 
-  # GET /brands/:id/models
-  # Return all models of a brand sorted by alphabetical order
-  def models
-    brand = Brand.find_by(id: params[:id])
-    if brand
-      models = brand.models
-      render json: ModelsRepresenter.new(models).as_json
-    else
-      render json: { error: "Brand not found" }, status: :not_found
-    end
-  end
-
   # POST /brands
   # Creates a new brand by passing the name of the brand
   # Return error message if a brand with the passed name already exists
@@ -28,6 +16,21 @@ class BrandsController < ApplicationController
     else
       render json: { error: brand.errors.full_messages }, status: :conflict
     end
+  end
+
+  # GET /brands/:id/models
+  # Return all models of a brand sorted by alphabetical order
+  def models_get
+    brand = Brand.find_by(id: params[:id])
+    if brand
+      models = brand.models
+      render json: ModelsRepresenter.new(models).as_json
+    else
+      render json: { error: "Brand not found" }, status: :not_found
+    end
+  end
+
+  def models_post
   end
 
   private
