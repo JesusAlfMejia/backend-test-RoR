@@ -62,4 +62,50 @@ RSpec.describe "Brands Endpoints", type: :request do
       expect(json_response["error"]).to include("Name has already been taken")
     end
   end
+
+  describe "POST /brands/:id/models" do
+    let!(:brand) { FactoryBot.create(:brand, name: "Toyota") }
+
+    it "creates a new model" do
+      expect {
+        post "/brands/#{brand.id}/models", params: { name: "Prius", average_price: 406400  }, as: :json
+      }.to change { Model.count }.from(0).to(1)
+
+      expect(response).to have_http_status(:created)
+      json_response = JSON.parse(response.body)
+      expect(json_response["message"]).to eq("Model created successfully")
+    end
+
+    it "throws an error if brand id is invalid" do
+      expect {
+        post "/brands/#{brand.id + 1}/models", params: { name: "Prius", average_price: 406400 }, as: :json
+      }.not_to change { Model.count }
+
+      expect(response).to have_http_status(:not_found)
+      json_response = JSON.parse(response.body)
+      expect(json_response["error"]).to eq("Invalid Brand ID")
+    end
+
+    it "throws an error if a model of the same brand already exists" do
+      FactoryBot.create(:model, name: "Prius", average_price: 406400, brand_id: brand.id)
+
+      expect {
+        post "/brands/#{brand.id}/models", params: { name: "Prius", average_price: 406400 }, as: :json
+      }.not_to change { Model.count }
+
+      expect(response).to have_http_status(:conflict)
+      json_response = JSON.parse(response.body)
+      expect(json_response["error"]).to eq("Name already in use by another model of the same brand")
+    end
+
+    it "throws an error if the given average price is not higher than 100,000" do
+      expect {
+        post "/brands/#{brand.id}/models", params: { name: "Prius", average_price: 1000 }, as: :json
+      }.not_to change { Model.count }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      json_response = JSON.parse(response.body)
+      expect(json_response["error"]).to eq("Average price must be higher than 100,000")
+    end
+  end
 end
