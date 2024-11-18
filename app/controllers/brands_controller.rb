@@ -10,6 +10,10 @@ class BrandsController < ApplicationController
   # Creates a new brand by passing the name of the brand
   # Return error message if a brand with the passed name already exists
   def create
+    if params[:name].blank?
+      render json: { error: "Name parameter is required" }, status: :bad_request
+      return
+    end
     brand = Brand.new(brand_params)
     if brand.save
       render json: { message: "Brand created successfully", id: brand.id, name: brand.name }, status: :created

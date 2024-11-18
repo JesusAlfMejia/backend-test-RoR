@@ -43,7 +43,7 @@ RSpec.describe "Brands Endpoints", type: :request do
   describe "POST /brands" do
     it "creates a new brand" do
       expect {
-        post "/brands", params: { brand: { name: "Toyota" } }
+        post "/brands", params: { name: "Toyota"  }, as: :json
       }.to change { Brand.count }.from(0).to(1)
 
       expect(response).to have_http_status(:created)
@@ -54,7 +54,7 @@ RSpec.describe "Brands Endpoints", type: :request do
     it "returns an error if the brand already exists" do
       FactoryBot.create(:brand, name: "Toyota")
       expect {
-        post "/brands", params: { brand: { name: "Toyota" } }
+        post "/brands", params: { name: "Toyota"  }, as: :json
       }.not_to change { Brand.count }
 
       expect(response).to have_http_status(:conflict)
