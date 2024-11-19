@@ -49,6 +49,7 @@ RSpec.describe "Brands Endpoints", type: :request do
       expect(response).to have_http_status(:created)
       json_response = JSON.parse(response.body)
       expect(json_response["message"]).to eq("Brand created successfully")
+      expect(Brand.find_by(name: "Toyota").average_price).to be_nil
     end
 
     it "returns an error if the brand already exists" do
@@ -68,12 +69,27 @@ RSpec.describe "Brands Endpoints", type: :request do
 
     it "creates a new model" do
       expect {
-        post "/brands/#{brand.id}/models", params: { name: "Prius", average_price: 406400  }, as: :json
+        post "/brands/#{brand.id}/models", params: { name: "Prius", average_price: 406400 }, as: :json
       }.to change { Model.count }.from(0).to(1)
 
       expect(response).to have_http_status(:created)
       json_response = JSON.parse(response.body)
       expect(json_response["message"]).to eq("Model created successfully")
+      expect(Brand.find_by(name: "Toyota").average_price).to eq(406400)
+    end
+
+    it "creates a new model without an average price" do
+      FactoryBot.create(:model, name: "Avanza", average_price: 160000, brand_id: brand.id)
+      FactoryBot.create(:model, name: "Camry", average_price: 260000, brand_id: brand.id)
+      expect {
+        post "/brands/#{brand.id}/models", params: { name: "Prius" }, as: :json
+      }.to change { Model.count }.from(2).to(3)
+
+      expect(response).to have_http_status(:created)
+      json_response = JSON.parse(response.body)
+      expect(json_response["message"]).to eq("Model created successfully")
+      expect(Model.last.average_price).to be_nil
+      expect(Brand.find_by(name: "Toyota").average_price).to eq(210000)
     end
 
     it "throws an error if brand id is invalid" do
