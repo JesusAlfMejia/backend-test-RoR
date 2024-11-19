@@ -4,11 +4,11 @@ class ModelsRepresenter
   end
 
   def as_json
-    models.order(:name).map do |model|
+    models.order("LOWER(name)").map do |model|
       {
         id: model.id,
         name: model.name,
-        average_price: model.average_price
+        average_price: model.average_price || 0
       }
     end
   end

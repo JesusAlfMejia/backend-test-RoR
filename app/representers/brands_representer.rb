@@ -4,11 +4,11 @@ class BrandsRepresenter
   end
 
   def as_json
-    brands.map do |brand|
+    brands.order(:id).map do |brand|
       {
         id: brand.id,
         name: brand.name,
-        average_price: brand.average_price
+        average_price: brand.average_price || 0
       }
     end
   end
