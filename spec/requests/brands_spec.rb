@@ -99,7 +99,7 @@ RSpec.describe "Brands Endpoints", type: :request do
 
       expect(response).to have_http_status(:not_found)
       json_response = JSON.parse(response.body)
-      expect(json_response["error"]).to eq("Invalid Brand ID")
+      expect(json_response["error"]).to include("Couldn't find Brand")
     end
 
     it "throws an error if a model of the same brand already exists" do
@@ -111,7 +111,7 @@ RSpec.describe "Brands Endpoints", type: :request do
 
       expect(response).to have_http_status(:conflict)
       json_response = JSON.parse(response.body)
-      expect(json_response["error"]).to eq("Name already in use by another model of the same brand")
+      expect(json_response["error"]).to include("Name has already been taken")
     end
 
     it "throws an error if the given average price is not higher than 100,000" do
@@ -121,7 +121,7 @@ RSpec.describe "Brands Endpoints", type: :request do
 
       expect(response).to have_http_status(:unprocessable_entity)
       json_response = JSON.parse(response.body)
-      expect(json_response["error"]).to eq("Average price must be higher than 100,000")
+      expect(json_response["error"]).to include("Average price must be greater than 100000")
     end
   end
 end
