@@ -49,6 +49,8 @@ This is my solution for the Nexu Backend Coding Challenge. The application provi
 
 Returns a list of all brands with their average prices.
 
+**Note:** The average price for each brand is calculated based on the `average_price` of its models, excluding models with an `average_price` of `0`.
+
 **Response Example**:
 
 ```json
